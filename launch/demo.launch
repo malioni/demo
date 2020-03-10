@@ -1,0 +1,11 @@
+<launch>
+<node name="mocap_ekf_node" type="mocap_ekf_node" pkg="mocap_ekf" output="screen">
+	<rosparam command="load" file="$(find mocap_ekf)/params/gains.yaml"/>
+	<rosparam command="load" file="$(find mocap_ekf)/params/leo.yaml"/>
+<!-- 	<param name="port" value="/dev/ttyACM0"/> -->
+	<remap from="truth/transform" to="/multirotor/ground_truth/transform/NED"/>
+	<remap from="imu" to="/multirotor/imu/data"/>
+</node>
+
+<!-- <node name="sim_tester" type="sim_tester" pkg="demo" output="screen"/> -->
+</launch>
