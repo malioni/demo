@@ -13,15 +13,17 @@ import matplotlib.pyplot as plt
 class simTester:
 
 	def __init__(self):
-		self.pub = rospy.Publisher('/multirotor/command',Command, queue_size=10, latch=True)
+		self.pub = rospy.Publisher('/command',Command, queue_size=10, latch=True)
 		self.command_msg = Command()
 		self.command_msg.mode = self.command_msg.MODE_ROLL_PITCH_YAWRATE_THROTTLE
 		self.count = 1 # used for initiating time
 
-		rospy.Subscriber('/odom',Odometry,self.callback)
+		rospy.Subscriber('/multirotor/truth/NED',Odometry,self.callback)
 
-		with open('/home/matiss/catkin_ws/src/demo/scripts/demo.yaml','r') as f:
-			param = yaml.safe_load(f)
+		# with open('/home/matiss/demo_ws/src/demo/scripts/demo.yaml','r') as f:
+		# 	param = yaml.safe_load(f)
+
+		param = rospy.get_param('~')
 
 		self.mass = param['dynamics']['mass']
 		self.g = param['dynamics']['g']
