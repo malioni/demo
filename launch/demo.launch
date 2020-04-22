@@ -1,24 +1,24 @@
 <launch>
-<!-- <node name="mocap_ekf_node" type="mocap_ekf_node" pkg="mocap_ekf" output="screen">
+<node name="mocap_ekf_node" type="mocap_ekf_node" pkg="mocap_ekf" output="screen">
 	<rosparam command="load" file="$(find mocap_ekf)/params/gains.yaml"/>
 	<rosparam command="load" file="$(find mocap_ekf)/params/leo.yaml"/>
 	<remap from="truth/transform" to="/multirotor/ground_truth/transform/NED"/>
 	<remap from="imu" to="/multirotor/imu/data"/>
-</node> -->
+</node>
 
 <node name="sim_tester" type="sim_tester.py" pkg="demo" output="screen">
 	<rosparam command="load" file="$(find demo)/scripts/demo.yaml" />
 </node>
 
 <node name="rosflight_io" type="rosflight_io" pkg="rosflight" output="screen">
-<!-- 		<param name="port" value="/dev/ttyACM0"/> -->
-	<param name="udp" value="true"/>
+		<param name="port" value="/dev/ttyACM0"/>
+<!-- 	<param name="udp" value="true"/> -->
 </node>
 
 <node name="rc_joy" type="rc_joy" pkg="rosflight_joy" output="screen">
 	<remap from="RC" to="/multirotor/RC" />
 </node>
-
+ -->
 <!-- <include file="$(find package_name)/launch/file.launch" /> -->
 
 </launch>

@@ -7,7 +7,7 @@ from diff_flatness import diff_flatness
 from traj_planner import trajectory_planner
 from controller import controller
 import yaml
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 
 class simTester:
@@ -32,13 +32,13 @@ class simTester:
 		# calculate the equilibrium force
 		self.force_adjust = param['dynamics']['mass']*param['dynamics']['g']/param['controller']['equilibrium_throttle']
 		# plotting variables
-		self.time = []
-		self.pos_x_des = []
-		self.pos_x_actual = []
-		self.pos_y_des = []
-		self.pos_y_actual = []
-		self.pos_z_des = []
-		self.pos_z_actual = []
+		# self.time = []
+		# self.pos_x_des = []
+		# self.pos_x_actual = []
+		# self.pos_y_des = []
+		# self.pos_y_actual = []
+		# self.pos_z_des = []
+		# self.pos_z_actual = []
 
 	def callback(self,msg):
 
@@ -60,14 +60,14 @@ class simTester:
 		ang_curr = self.euler(attitude)
 
 		# plotting variables
-		self.time.append(time_from_start)
-		self.pos_x_actual.append(pos[0])
-		self.pos_x_des.append(pose[0][0])
+		# self.time.append(time_from_start)
+		# self.pos_x_actual.append(pos[0])
+		# self.pos_x_des.append(pose[0][0])
 
-		self.pos_y_actual.append(pos[1])
-		self.pos_y_des.append(pose[0][1])
-		self.pos_z_actual.append(pos[2])
-		self.pos_z_des.append(pose[0][2])
+		# self.pos_y_actual.append(pos[1])
+		# self.pos_y_des.append(pose[0][1])
+		# self.pos_z_actual.append(pos[2])
+		# self.pos_z_des.append(pose[0][2])
 
 		reference = np.array([pose[0],pose[2],pose[4],pose[1]])
 		state = np.array([pos,vel,ang_curr[2]])
@@ -125,30 +125,30 @@ if __name__ == '__main__':
 			print("exiting....")
 
 	# Plot the states over time and relative to each other
-	plt.figure(1)
-	plt.subplot(311)
-	plt.plot(sim_tester.time,sim_tester.pos_x_actual)
-	plt.plot(sim_tester.time,sim_tester.pos_x_des)
+	# plt.figure(1)
+	# plt.subplot(311)
+	# plt.plot(sim_tester.time,sim_tester.pos_x_actual)
+	# plt.plot(sim_tester.time,sim_tester.pos_x_des)
 
-	plt.subplot(312)
-	plt.plot(sim_tester.time,sim_tester.pos_y_actual)
-	plt.plot(sim_tester.time,sim_tester.pos_y_des)
+	# plt.subplot(312)
+	# plt.plot(sim_tester.time,sim_tester.pos_y_actual)
+	# plt.plot(sim_tester.time,sim_tester.pos_y_des)
 
-	plt.subplot(313)
-	plt.plot(sim_tester.time,sim_tester.pos_z_actual)
-	plt.plot(sim_tester.time,sim_tester.pos_z_des)
+	# plt.subplot(313)
+	# plt.plot(sim_tester.time,sim_tester.pos_z_actual)
+	# plt.plot(sim_tester.time,sim_tester.pos_z_des)
 
-	plt.figure(2)
-	plt.subplot(311)
-	plt.plot(sim_tester.pos_x_actual,sim_tester.pos_y_actual)
-	plt.plot(sim_tester.pos_x_des,sim_tester.pos_y_des)
+	# plt.figure(2)
+	# plt.subplot(311)
+	# plt.plot(sim_tester.pos_x_actual,sim_tester.pos_y_actual)
+	# plt.plot(sim_tester.pos_x_des,sim_tester.pos_y_des)
 
-	plt.subplot(312)
-	plt.plot(sim_tester.pos_x_actual,sim_tester.pos_z_actual)
-	plt.plot(sim_tester.pos_x_des,sim_tester.pos_z_des)
+	# plt.subplot(312)
+	# plt.plot(sim_tester.pos_x_actual,sim_tester.pos_z_actual)
+	# plt.plot(sim_tester.pos_x_des,sim_tester.pos_z_des)
 
-	plt.subplot(313)
-	plt.plot(sim_tester.pos_y_actual,sim_tester.pos_z_actual)
-	plt.plot(sim_tester.pos_y_des,sim_tester.pos_z_des)
+	# plt.subplot(313)
+	# plt.plot(sim_tester.pos_y_actual,sim_tester.pos_z_actual)
+	# plt.plot(sim_tester.pos_y_des,sim_tester.pos_z_des)
 
-	plt.show()
+	# plt.show()
