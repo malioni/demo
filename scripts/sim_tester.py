@@ -18,7 +18,7 @@ class simTester:
 		self.command_msg.mode = self.command_msg.MODE_ROLL_PITCH_YAWRATE_THROTTLE
 		self.count = 1 # used for initiating time
 
-		rospy.Subscriber('/multirotor/truth/NED',Odometry,self.callback)
+		rospy.Subscriber('/odom',Odometry,self.callback)
 
 		# with open('/home/matiss/demo_ws/src/demo/scripts/demo.yaml','r') as f:
 		# 	param = yaml.safe_load(f)
@@ -53,10 +53,11 @@ class simTester:
 		pose = trajectory_planner(time_from_start)
 
 		pos = msg.pose.pose.position
-		pos = np.array([pos.x,pos.y,pos.z])
+		# The mekf gives unusual odometry message, the coordinates are different than NED
+		pos = np.array([-1.*pos.y,-1.*pos.z,pos.x])
 		attitude = msg.pose.pose.orientation
 		vel = msg.twist.twist.linear
-		vel = np.array([vel.x,vel.y,vel.z])
+		vel = np.array([-1.*vel.y,-1.*vel.z,vel.x])
 		ang_curr = self.euler(attitude)
 
 		# plotting variables
@@ -104,9 +105,9 @@ class simTester:
 
 	def euler(self, quat):
 		w = quat.w
-		x = quat.x
-		y = quat.y
-		z = quat.z
+		x = -1.*quat.y
+		y = -1.*quat.z
+		z = quat.x
 
 		roll = np.arctan2(2.0 * (w * x + y * z), 1. - 2. * (x * x + y * y))
 		pitch = np.arcsin(2.0 * (w * y - z * x))
