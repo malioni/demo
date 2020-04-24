@@ -6,6 +6,8 @@
 	<remap from="imu" to="/imu/data"/>
 </node>
 
+<node name="optitrack" type="node" pkg="optitrack_vrpn" output="screen" />
+
 <node name="sim_tester" type="sim_tester.py" pkg="demo" output="screen">
 	<rosparam command="load" file="$(find demo)/scripts/demo.yaml" />
 </node>
