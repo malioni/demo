@@ -91,6 +91,7 @@ class simTester:
 		self.command_msg.y = pitch
 		self.command_msg.z = 0.0 # yaw_rate if variable desired yaw
 		self.command_msg.F = force
+		self.command.ignore = Command.IGNORE_X | Command.IGNORE_Y | Command.IGNORE_Z
 		self.pub.publish(self.command_msg)
 
 
