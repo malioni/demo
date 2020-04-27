@@ -17,7 +17,7 @@ def trajectory_planner(time, a=2.0, b=1.0, h=5.0,c=0.5):
 
     # Lift up to needed height and hover there
     if time < 2.0*np.pi/c:
-        pos = np.array([0.0,0.0,200000.0])
+        pos = np.array([0.0,0.0,2.0])
         vel = np.array([0.0,0.0,0.0])
         head = 0.0
         head_d = 0.0

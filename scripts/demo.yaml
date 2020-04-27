@@ -1,5 +1,5 @@
 dynamics: {
-  mass: 2.0,
+  mass: 0.527,
   g: 9.81
 }
 
@@ -7,11 +7,11 @@ controller: {
   # Kp_yaw: 0.1,
   # Kp_accel: [[1.8, 0, 0],[0,1.8,0],[0,0,3.0]],
   # Kd_accel: [[2.2, 0.0, 0],[0,2.2,0],[0,0,3.0]],
-  kp_accel_xy: 1.8,
-  kp_accel_z: 3.0,
-  kd_accel_xy: 2.2,
-  kd_accel_z: 3.0,
-  equilibrium_throttle: 0.5
+  kp_accel_xy: 0.1,
+  kp_accel_z: 0.7,
+  kd_accel_xy: 0.1,
+  kd_accel_z: 0.1,
+  equilibrium_throttle: 0.37
 }
 
 

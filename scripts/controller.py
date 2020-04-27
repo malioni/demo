@@ -18,7 +18,7 @@ class controller:
 		pos = state[0]
 		# yaw = state[2]
 
-		acc_com = acc_des+np.matmul(self.kd_accel,vel_des-vel)+np.matmul(self.kp_accel,pos_des-pos)
+		acc_com = np.matmul(self.kd_accel,vel_des-vel)+np.matmul(self.kp_accel,pos_des-pos)
 		yaw_rate = 0.0#self.kp_yaw*(yaw_des-yaw)
 
 		return np.array([acc_com,yaw_rate])
