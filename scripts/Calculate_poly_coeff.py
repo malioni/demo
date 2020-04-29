@@ -1,7 +1,7 @@
 import numpy as np
 
 # Initial and final conditions (s(0),s(T),sd(0),sd(T),sdd(0),sdd(T))
-s = np.array([[-1.5],[0.0],[0.0],[0.0],[0.0],[0.0]])
+s = np.array([[0.0],[-1.5],[0.0],[0.0],[0.0],[0.0]])
 t = 0.0
 T = 4.0
 
