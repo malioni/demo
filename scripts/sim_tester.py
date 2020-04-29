@@ -16,7 +16,8 @@ class simTester:
         self.pub = rospy.Publisher('/command',Command, queue_size=10, latch=True)
         self.command_msg = Command()
         self.command_msg.mode = self.command_msg.MODE_ROLL_PITCH_YAWRATE_THROTTLE
-        self.count = 1 # used for initiating time
+        self.count = True # used for initiating time
+        self.past_start = True # used for initiating time for starting trajectory
 
         rospy.Subscriber('/odom',Odometry,self.callback)
 
@@ -44,54 +45,71 @@ class simTester:
 
         # for some reason time did not initiate correctly if done
         # in the __init__ function
-        if self.count == 1:
+        if self.count:
             self.start_time = rospy.Time.now()
-            self.count = 0
+            self.count = False
         
         time = rospy.Time.now()
-        time_from_start = time.to_sec() - self.start_time.to_sec() 
-        pose = trajectory_planner(time_from_start)
+        time_from_start = time.to_sec() - self.start_time.to_sec()
 
-        pos = msg.pose.pose.position
-        # The mekf gives unusual odometry message, the coordinates are different than NED
-        pos = np.array([-1.*pos.y,-1.*pos.z,pos.x])
-        attitude = msg.pose.pose.orientation
-        vel = msg.twist.twist.linear
-        vel = np.array([-1.*vel.y,-1.*vel.z,vel.x])
-        ang_curr = self.euler(attitude)
+        # First 8 seconds stand still
+        if (time_from_start <= 8.0) and self.past_start:
+            self.command_msg.x = 0.0
+            self.command_msg.y = 0.0
+            self.command_msg.z = 0.0
+            self.command_msg.F = 0.2
 
-        # plotting variables
-        # self.time.append(time_from_start)
-        # self.pos_x_actual.append(pos[0])
-        # self.pos_x_des.append(pose[0][0])
 
-        # self.pos_y_actual.append(pos[1])
-        # self.pos_y_des.append(pose[0][1])
-        # self.pos_z_actual.append(pos[2])
-        # self.pos_z_des.append(pose[0][2])
+        else:
+            if self.past_start:
+                self.start_time = rospy.Time.now()
+                time_from_start = time.to_sec() - self.start_time.to_sec()
+                self.past_start = False
 
-        reference = np.array([pose[0],pose[2],pose[4],pose[1]])
-        state = np.array([pos,vel,ang_curr[2]])
+            pose = trajectory_planner(time_from_start)
 
-        control_inputs = self.controller.update(reference,state)
+            pos = msg.pose.pose.position
+            # The mekf gives unusual odometry message, the coordinates are different than NED
+            pos = np.array([-1.*pos.y,-1.*pos.z,pos.x])
+            attitude = msg.pose.pose.orientation
+            vel = msg.twist.twist.linear
+            vel = np.array([-1.*vel.y,-1.*vel.z,vel.x])
+            ang_curr = self.euler(attitude)
 
-        accel_input = np.array([control_inputs[0],pose[3]+control_inputs[1]])
+            # plotting variables used for testing in simulation
+            # self.time.append(time_from_start)
+            # self.pos_x_actual.append(pos[0])
+            # self.pos_x_des.append(pose[0][0])
+    
+            # self.pos_y_actual.append(pos[1])
+            # self.pos_y_des.append(pose[0][1])
+            # self.pos_z_actual.append(pos[2])
+            # self.pos_z_des.append(pose[0][2])
+    
+            reference = np.array([pose[0],pose[2],pose[4],pose[1]])
+            state = np.array([pos,vel,ang_curr[2]])
+    
+            control_inputs = self.controller.update(reference,state)
+    
+            accel_input = np.array([control_inputs[0],pose[3]+control_inputs[1]])
+    
+            states = diff_flatness(pose, accel_input, ang_curr,mass=self.mass,g=self.g)
+            # R = states[1]
+            # angle = self.angles(R)
+    
+            force = states[2] / self.force_adjust
+            force = self.controller.saturate(force)
+            roll = states[0]
+            pitch = states[1]
+            yaw_rate = accel_input[1]
+    
+            self.command_msg.x = roll
+            self.command_msg.y = pitch
+            self.command_msg.z = 0.0 # yaw_rate if variable desired yaw
+            self.command_msg.F = force
+            # Ignores x,y,z for testing purposes (delete afterwards)
+            self.command_msg.ignore = Command.IGNORE_X | Command.IGNORE_Y | Command.IGNORE_Z
 
-        states = diff_flatness(pose, accel_input, ang_curr,mass=self.mass,g=self.g)
-        # R = states[1]
-        # angle = self.angles(R)
-
-        force = states[2] / self.force_adjust
-        force = self.controller.saturate(force)
-        roll = states[0]
-        pitch = states[1]
-        yaw_rate = accel_input[1]
-
-        self.command_msg.x = roll
-        self.command_msg.y = pitch
-        self.command_msg.z = 0.0 # yaw_rate if variable desired yaw
-        self.command_msg.F = force
-        self.command_msg.ignore = Command.IGNORE_X | Command.IGNORE_Y | Command.IGNORE_Z
         self.pub.publish(self.command_msg)
 
 
