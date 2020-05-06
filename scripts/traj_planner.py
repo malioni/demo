@@ -1,6 +1,6 @@
 import numpy as np
 
-def trajectory_planner(time, a=2.0, b=1.0, h=1.5,c=0.5):
+def trajectory_planner(time, a=2.0, b=0.5, h=2.0,c=0.5):
     # a is the width of the trajectory. a = 2.0 means that the path will
     # be 2 meters wide and 4 meters in length
 
@@ -16,26 +16,28 @@ def trajectory_planner(time, a=2.0, b=1.0, h=1.5,c=0.5):
     # rotation
 
     # Lift up to needed height and hover there
-    if time < 4.0:
+    if time < 8.0:
         # These A,B,C coefficients were calculated by hand and depend on the ascending time
         # being 4 seconds. If time is changed, these coefficients need to be recalculated
         # A script is provided under demo/scripts, if needed
-        A = -0.00878906
-        B = 0.08789063
-        C = -0.234375
+        A = -0.00036621
+        B = 0.00732422
+        C = -0.0390625
         pos = np.array([0.0,0.0,A*time**5+B*time**4+C*time**3])
         vel = np.array([0.0,0.0,5.*A*time**4+4.*B*time**3+3.*C*time**2])
         head = 0.0
         head_d = 0.0
         accel = np.array([0.0,0.0,20.*A*time**3+12.*B*time**2+6.*C*time])
+        print("LIFTOFF MODE")
     # Hover at the desired height until time is 2*pi/c
-    elif time < 2.0*np.pi/c:
+    elif time < 2.0*np.pi/c*1000.:
         pos = np.array([0.0,0.0,-h])
         vel = np.array([0.0,0.0,0.0])
         head = 0.0
         head_d = 0.0
         accel = np.array([0.0,0.0,0.0])
-    elif time < 8.0*np.pi/c: # Three rounds of slanted figure 8
+        print("HOVER MODE")
+    elif time < 8.0*np.pi/c*1000.: # Three rounds of slanted figure 8
         # final trajectory, yaw is left commented for reference
         pos = np.array([a/2*np.sin(2*c*time),a*np.sin(c*time),-h+b*np.sin(c*time)])
         vel = np.array([a*c*np.cos(2*c*time),a*c*np.cos(c*time),b*c*np.cos(c*time)])
