@@ -11,7 +11,8 @@ controller: {
   kp_accel_z: 1.2,
   kd_accel_xy: 0.1,
   kd_accel_z: 1.2,
-  equilibrium_throttle: 0.37
+  equilibrium_throttle: 0.37,
+  ki: 0.1
 }
 
 
